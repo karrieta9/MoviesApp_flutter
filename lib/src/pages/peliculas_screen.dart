@@ -3,6 +3,7 @@ import 'package:movies_app_flutter/src/search/search_delegate.dart';
 import 'package:movies_app_flutter/src/widgets/card_swiper.dart';
 import 'package:movies_app_flutter/src/providers/peliculas_prov.dart';
 import 'package:movies_app_flutter/src/widgets/content_horizontal_scroll.dart';
+// import 'package:movies_app_flutter/src/widgets/app_bar_general.dart';
 
 class PeliculasScreen extends StatelessWidget {
   
@@ -13,31 +14,22 @@ class PeliculasScreen extends StatelessWidget {
     peliculasProvider.getPopulares();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Peliculas en Cine'),
-        backgroundColor: Colors.redAccent,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () {
-              showSearch(
-                context: context, 
-                delegate: DataSearch(),
-                // query: 'Hola'
-              );
-            }
-          )
+      body: Column(
+        children: [
+          SafeArea(child: _AppBarPrincipal()),
+          Container(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                _swiperTarjetas(),
+                // Expanded(child: Container(color: Colors.yellow,)),
+                SizedBox(height: 100,),
+                _movieScroll(context)
+              ],
+            )
+          ),
         ],
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            _swiperTarjetas(),
-            _movieScroll(context)
-          ],
-        )
-      ),
+      )
     );
   }
 
@@ -69,9 +61,12 @@ class PeliculasScreen extends StatelessWidget {
         children: <Widget>[
           Container(
             padding: EdgeInsets.only(left: 20.0),
-            child: Text('Populares', style: Theme.of(context).textTheme.subtitle1,)
+            child: Text(
+              'Populares', 
+              style: Theme.of(context).textTheme.bodyText1,
+            )
           ),
-          SizedBox(height: 5.0,),
+          SizedBox(height: 10.0,),
           // FutureBuilder(
           //   future: peliculasProvider.getPopulares(),
           //   builder: (context, AsyncSnapshot snapshot){
@@ -98,6 +93,49 @@ class PeliculasScreen extends StatelessWidget {
         ],
       ),
       width: double.infinity,
+    );
+  }
+}
+
+
+class _AppBarPrincipal extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // color: Colors.red,
+      padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            // splashColor: Colors.green,
+            splashRadius: 30.0,
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Row(
+            children : [
+              IconButton(
+                splashRadius: 30.0,
+                icon: Icon(Icons.more_horiz),
+                onPressed: () {},
+              ),
+              IconButton(
+                splashRadius: 30.0,
+                icon: Icon(Icons.search), 
+                onPressed: () {
+                  showSearch(
+                    context: context, 
+                    delegate: DataSearch(),
+                    // query: 'Hola'
+                  );
+                }
+              )
+            ]
+          )
+        ],
+      ),
     );
   }
 }

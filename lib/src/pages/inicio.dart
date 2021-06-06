@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Inicio extends StatelessWidget {
-  List<Map> _categorias = [
+  final List<Map> _categorias = [
     {
       'nombre': 'Peliculas',
       'icono' : Icons.movie,
@@ -17,30 +17,39 @@ class Inicio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-          child: SafeArea(
-            child: Column(
-              children: [
-                CustomAppBar(),
-                SizedBox(height: 20.0),
-                Titulos(),
-                SizedBox(height: 30.0),
-                Buscar(),
-                SizedBox(height: 40.0),
-                Categorias(_categorias)
-              ],
-            )
+        body: SafeArea(
+          child: Column(
+            children: [
+              Stack(
+                children: [
+                  Positioned(
+                    top: -65,
+                    left: -110,
+                    child: Container(
+                      width: 300,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(244, 244, 245, 0.8),
+                        borderRadius: BorderRadius.circular(300)
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      CustomAppBar(),
+                      Titulos(),
+                      Buscar(),
+                    ],
+                  )
+                ],
+              ),
+              Categorias(_categorias)
+            ],
+          )
           ),
-        ),
       );
   }
-
- 
 }
-
-
-
 
 class CustomAppBar extends StatelessWidget {
   const CustomAppBar({
@@ -50,10 +59,16 @@ class CustomAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Colors.red,
+      padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [                    
-          Icon(Icons.star_border),
+        children: [     
+          IconButton(
+            splashRadius: 30.0,
+            icon: Icon(Icons.menu),
+            onPressed: () {}
+          ),
           CircleAvatar(
             backgroundImage: NetworkImage('https://us.123rf.com/450wm/thesomeday123/thesomeday1231709/thesomeday123170900021/85622928-icono-de-perfil-de-avatar-predeterminado-marcador-de-posici%C3%B3n-de-foto-gris-vectores-de-ilustraciones.jpg?ver=6'),
             radius: 20.0,
@@ -71,19 +86,22 @@ class Titulos extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      // crossAxisAlignment: CrossAxisAlignment.end,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'textto 1',
-          style: Theme.of(context).textTheme.headline1,
-        ),
-        Text(
-          'textto 2',
-          style: Theme.of(context).textTheme.headline2,
-        )
-      ],
+    return Container(
+      padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 10.0),
+      child: Column(
+        // crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Entretenimiento',
+            style: Theme.of(context).textTheme.headline1,
+          ),
+          Text(
+            'MoviesApp',
+            style: Theme.of(context).textTheme.headline2,
+          )
+        ],
+      ),
     );
   }
 }
@@ -95,18 +113,21 @@ class Buscar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      autofocus: false,
-      decoration: InputDecoration(
-        hintText: 'Buscar',
-        labelText: 'Buscar',
-        suffixIcon: Icon(Icons.search),
+    return Container(
+      padding: EdgeInsets.only(left: 20.0, right: 20.0, top: 15.0, bottom: 15.0),
+      child: TextField(
+        autofocus: false,
+        decoration: InputDecoration(
+          hintText: 'Buscar',
+          labelText: 'Buscar',
+          suffixIcon: Icon(Icons.search),
 
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10.0)
-        )
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10.0)
+          )
+        ),
+      onChanged: (valor) {}
       ),
-    onChanged: (valor) {}
     );
   }
 }
@@ -118,25 +139,28 @@ class Categorias extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          'Categorias :',
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-        Container(
-          height: 180.0,
-          child: PageView(
-            pageSnapping: false,
-            controller: PageController(
-              initialPage: 0,
-              viewportFraction: 0.5
-            ),
-            children: _cartas(context)
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Categorias',
+            style: Theme.of(context).textTheme.bodyText1,
           ),
-        )
-      ],
+          Container(
+            height: 180.0,
+            child: PageView(
+              pageSnapping: false,
+              controller: PageController(
+                initialPage: 0,
+                viewportFraction: 0.5
+              ),
+              children: _cartas(context)
+            ),
+          )
+        ],
+      ),
     );
   }
 
