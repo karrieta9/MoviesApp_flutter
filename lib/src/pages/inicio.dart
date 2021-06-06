@@ -1,103 +1,183 @@
 import 'package:flutter/material.dart';
-import 'package:movies_app_flutter/src/search/search_delegate.dart';
-import 'package:movies_app_flutter/src/widgets/card_swiper.dart';
-import 'package:movies_app_flutter/src/providers/peliculas_prov.dart';
-import 'package:movies_app_flutter/src/widgets/content_horizontal_scroll.dart';
 
 class Inicio extends StatelessWidget {
-  
-  final peliculasProvider = new PeliculasProvider();
+  List<Map> _categorias = [
+    {
+      'nombre': 'Peliculas',
+      'icono' : Icons.movie,
+      'ruta' : 'peliculas'
+    },
+    {
+      'nombre': 'Series',
+      'icono' : Icons.live_tv,
+      'ruta' : 'series'
+    }
+  ];
 
   @override
   Widget build(BuildContext context) {
-    peliculasProvider.getPopulares();
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Peliculas en Cine'),
-        backgroundColor: Colors.redAccent,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.search), 
-            onPressed: () {
-              showSearch(
-                context: context, 
-                delegate: DataSearch(),
-                // query: 'Hola'
-              );
-            }
-          )
+        body: Container(
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+          child: SafeArea(
+            child: Column(
+              children: [
+                CustomAppBar(),
+                SizedBox(height: 20.0),
+                Titulos(),
+                SizedBox(height: 30.0),
+                Buscar(),
+                SizedBox(height: 40.0),
+                Categorias(_categorias)
+              ],
+            )
+          ),
+        ),
+      );
+  }
+
+ 
+}
+
+
+
+
+class CustomAppBar extends StatelessWidget {
+  const CustomAppBar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [                    
+          Icon(Icons.star_border),
+          CircleAvatar(
+            backgroundImage: NetworkImage('https://us.123rf.com/450wm/thesomeday123/thesomeday1231709/thesomeday123170900021/85622928-icono-de-perfil-de-avatar-predeterminado-marcador-de-posici%C3%B3n-de-foto-gris-vectores-de-ilustraciones.jpg?ver=6'),
+            radius: 20.0,
+          ),
         ],
-      ),
-      body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: <Widget>[
-            _swiperTarjetas(),
-            _movieScroll(context)
-          ],
-        )
       ),
     );
   }
+}
 
-   Widget _swiperTarjetas() {
+class Titulos extends StatelessWidget {
+  const Titulos({
+    Key key,
+  }) : super(key: key);
 
-     return FutureBuilder(
-       future: peliculasProvider.getEnCines(),
-      //  initialData: [],
-       builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-         if(snapshot.hasData){
-          return CardSwiper(peliculas: snapshot.data);
-         }else {
-           return Container(
-             height: 400.0,
-             child: Center(
-               child: CircularProgressIndicator()
-              )
-            );
-         }
-         
-       },
-     );
-   }
-
-  Widget _movieScroll(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Container(
-            padding: EdgeInsets.only(left: 20.0),
-            child: Text('Populares', style: Theme.of(context).textTheme.subtitle1,)
-          ),
-          SizedBox(height: 5.0,),
-          // FutureBuilder(
-          //   future: peliculasProvider.getPopulares(),
-          //   builder: (context, AsyncSnapshot snapshot){
-          //     if(snapshot.hasData){
-          //       return ContentHorizontal(peliculas: snapshot.data,);
-          //     }else{
-          //       return Center(child: CircularProgressIndicator());
-          //     }
-          //   }
-          // )
-          StreamBuilder(
-            stream: peliculasProvider.popularesStream,
-            builder: (context, AsyncSnapshot snapshot){
-              if(snapshot.hasData){
-                return ContentHorizontal(
-                  peliculas: snapshot.data,
-                  siguientePagina: peliculasProvider.getPopulares,
-                );
-              }else{
-                return Center(child: CircularProgressIndicator());
-              }
-            }
-          )
-        ],
-      ),
-      width: double.infinity,
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      // crossAxisAlignment: CrossAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'textto 1',
+          style: Theme.of(context).textTheme.headline1,
+        ),
+        Text(
+          'textto 2',
+          style: Theme.of(context).textTheme.headline2,
+        )
+      ],
     );
+  }
+}
+
+class Buscar extends StatelessWidget {
+  const Buscar({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      autofocus: false,
+      decoration: InputDecoration(
+        hintText: 'Buscar',
+        labelText: 'Buscar',
+        suffixIcon: Icon(Icons.search),
+
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10.0)
+        )
+      ),
+    onChanged: (valor) {}
+    );
+  }
+}
+
+
+class Categorias extends StatelessWidget {
+  final List listaCategorias;
+  const Categorias(this.listaCategorias);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          'Categorias :',
+          style: Theme.of(context).textTheme.bodyText1,
+        ),
+        Container(
+          height: 180.0,
+          child: PageView(
+            pageSnapping: false,
+            controller: PageController(
+              initialPage: 0,
+              viewportFraction: 0.5
+            ),
+            children: _cartas(context)
+          ),
+        )
+      ],
+    );
+  }
+
+  List<Widget> _cartas(BuildContext cont) {
+    return listaCategorias.map((cat) {
+      return GestureDetector(
+        onTap: () {
+          print(cat['ruta']);
+          Navigator.pushNamed(cont, cat['ruta']);
+        },
+        child: Container(
+          margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20.0),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.6),
+                spreadRadius: 3,
+                blurRadius: 7,
+                offset: Offset(0, 3)
+              )
+            ]
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Icon(
+                cat['icono'],
+                color: Theme.of(cont).primaryColor,
+                size: 90.0,
+              ),
+              Text(
+                cat['nombre'],
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(cont).textTheme.bodyText2,
+              )
+            ],
+          ),
+        ),
+      );
+    }).toList();
   }
 }
