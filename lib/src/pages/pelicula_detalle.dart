@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:movies_app_flutter/src/models/actores_model.dart';
 import 'package:movies_app_flutter/src/models/peliculas_model.dart';
 import 'package:movies_app_flutter/src/providers/peliculas_prov.dart';
+import 'package:movies_app_flutter/src/widgets/info_icon_text.dart';
 
 class PeliculaDetalle extends StatelessWidget {
 
@@ -33,7 +34,7 @@ class PeliculaDetalle extends StatelessWidget {
   Widget _crearAppbar(Pelicula pelicula) {
     return SliverAppBar(
       elevation: 2.0,
-      backgroundColor: Colors.redAccent,
+      // backgroundColor: Color(0xFFB7B7B7),
       expandedHeight: 200.0,
       floating: false,
       pinned: true,
@@ -46,7 +47,7 @@ class PeliculaDetalle extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
               color: Colors.white, 
-              fontSize: 16.0,
+              fontSize: 18.0,
             ),     
           ),
         ),
@@ -71,7 +72,7 @@ class PeliculaDetalle extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
               child: Image(
                 image: NetworkImage(pelicula.getPosterImg()),
-                height: 150.0,
+                height: 250.0,
               ),
             ),
           ),
@@ -79,24 +80,29 @@ class PeliculaDetalle extends StatelessWidget {
           Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
                 Text(
                   pelicula.title,
-                  style: Theme.of(context).textTheme.headline4, overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.headline1,
                 ),
                 Text(
                   pelicula.originalTitle,
                   style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,
                 ),
-                Row(
-                  children: [
-                    Icon(Icons.star_border),
-                    Text(
-                      pelicula.voteAverage.toString(),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    )
-                  ],
-                )
+                SizedBox(height: 20.0),
+                InfoIconText(
+                  icon: Icons.star, 
+                  texto: pelicula.voteAverage.toString(),
+                ),
+                InfoIconText(
+                  icon: Icons.date_range, 
+                  texto: pelicula.releaseDate,
+                ),
+                InfoIconText(
+                  icon: Icons.people, 
+                  texto: pelicula.popularity.toString(),
+                ),
               ],
             )
           )
@@ -142,24 +148,34 @@ class PeliculaDetalle extends StatelessWidget {
         ),
         itemCount: actores.length,
         itemBuilder: (context, i){
-          return Container(
-            child: Column(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20.0),
-                  child: FadeInImage(
-                    placeholder: AssetImage('assets/img/no-image.jpg'), 
-                    image: NetworkImage(actores[i].getPhotoImg()),
-                    height: 150.0,
-                    fit : BoxFit.cover
+          return GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, 'actor', arguments: actores[i].id );
+            },
+            child: Container(
+              child: Column(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                    child: FadeInImage(
+                      placeholder: AssetImage('assets/img/no-image.jpg'), 
+                      image: NetworkImage(actores[i].getPhotoImg()),
+                      height: 150.0,
+                      fit : BoxFit.cover
+                    ),
                   ),
-                ),
-                SizedBox(height: 5.0,),
-                Text(
-                  actores[i].name,
-                  overflow: TextOverflow.ellipsis,
-                )
-              ],
+                  SizedBox(height: 5.0,),
+                  Text(
+                    actores[i].name,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    actores[i].character,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.headline5,
+                  ),
+                ],
+              ),
             ),
           );
         },

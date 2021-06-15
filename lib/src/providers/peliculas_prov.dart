@@ -78,4 +78,16 @@ class PeliculasProvider {
     return await _procesarRespuesta(url);
   }
 
+  Future<ActorDetail> getActor(int actorId) async {
+    final url = Uri.https(_url, '3/person/$actorId', {
+      'api_key' : _apikey,
+      'language' : _languaje
+    });
+
+    final resp = await http.get(url);
+    final decodedData = json.decode(resp.body);
+    final actor = new ActorDetail.fromJsonMap(decodedData);
+    return actor;
+  }
+
 }
