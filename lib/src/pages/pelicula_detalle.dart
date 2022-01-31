@@ -46,8 +46,9 @@ class PeliculaDetalle extends StatelessWidget {
             pelicula.title, 
             overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: Colors.white, 
-              fontSize: 18.0,
+              fontSize: 22.0,
+              color: Color(0xFFF2F2F2),
+              fontWeight: FontWeight.bold,
             ),     
           ),
         ),
@@ -63,8 +64,9 @@ class PeliculaDetalle extends StatelessWidget {
 
   Widget _posterTitulo( BuildContext context, Pelicula pelicula) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
       child: Row(
+        // padding: EdgeInsets.symmetric(horizontal: 50.0),
         children: <Widget>[
           Hero(
             tag: pelicula.uniqueId,
@@ -72,40 +74,60 @@ class PeliculaDetalle extends StatelessWidget {
               borderRadius: BorderRadius.circular(20.0),
               child: Image(
                 image: NetworkImage(pelicula.getPosterImg()),
-                height: 250.0,
+                height: 200.0,
               ),
             ),
           ),
-          SizedBox(width: 20.0,),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // SizedBox(width: 20.0,),
+          Spacer(),
+          // Container(
+          //   color: Color(0xffff2f2f2),
+          //   child: 
+            Flexible(
+              child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
+                // Text(
+                //   pelicula.title,
+                //   style: Theme.of(context).textTheme.headline1,
+                // ),
                 Text(
-                  pelicula.title,
-                  style: Theme.of(context).textTheme.headline1,
-                ),
-                Text(
-                  pelicula.originalTitle,
-                  style: Theme.of(context).textTheme.subtitle1, overflow: TextOverflow.ellipsis,
+                  (pelicula.voteAverage * 10).toString() + '%',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.headline4,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 20.0),
-                InfoIconText(
-                  icon: Icons.star, 
-                  texto: pelicula.voteAverage.toString(),
+                Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: LinearProgressIndicator(
+                      minHeight: 5.0,
+                      value: pelicula.voteAverage / 10,
+                      backgroundColor: Color(0xFFF2F2F2),
+                      valueColor: AlwaysStoppedAnimation(Color(0xffd93025)),
+                    ),
+                  ),
                 ),
+                SizedBox(height: 20.0),
+                // InfoIconText(
+                //   icon: Icons.star,
+                //   texto: pelicula.voteAverage.toDouble(),
+                // ),
                 InfoIconText(
-                  icon: Icons.date_range, 
+                  icon: Icons.date_range,
                   texto: pelicula.releaseDate,
                 ),
+                SizedBox(height: 10.0),
                 InfoIconText(
-                  icon: Icons.people, 
+                  icon: Icons.people,
                   texto: pelicula.popularity.toString(),
                 ),
               ],
-            )
-          )
+            )),
+          // ),
+          
         ],
       ),
     );
@@ -129,7 +151,25 @@ class PeliculaDetalle extends StatelessWidget {
       // initialData: InitialData,
       builder: (context, AsyncSnapshot<List> snapshot) {
         if(snapshot.hasData){
-          return _crearListaActores(snapshot.data);
+          return Container(  
+            margin: EdgeInsets.symmetric(vertical: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    'Cast',
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ),
+                SizedBox(height: 20.0),
+                _crearListaActores(snapshot.data)
+              ],
+            ),
+          );
+          
+          
         }else {
           return Center(child: CircularProgressIndicator());
         }
@@ -139,7 +179,7 @@ class PeliculaDetalle extends StatelessWidget {
 
   Widget _crearListaActores(List<Actor> actores) {
     return SizedBox(
-      height: 200.0,
+      height: 180.0,
       child: PageView.builder(
         pageSnapping: false,
         controller: PageController(
@@ -160,7 +200,7 @@ class PeliculaDetalle extends StatelessWidget {
                     child: FadeInImage(
                       placeholder: AssetImage('assets/img/no-image.jpg'), 
                       image: NetworkImage(actores[i].getPhotoImg()),
-                      height: 150.0,
+                      height: 120.0,
                       fit : BoxFit.cover
                     ),
                   ),

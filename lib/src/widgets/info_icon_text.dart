@@ -8,6 +8,7 @@ class InfoIconText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(
           icon, 
@@ -16,7 +17,7 @@ class InfoIconText extends StatelessWidget {
         SizedBox(width: 8.0),
         Text(
           texto,
-          style: Theme.of(context).textTheme.subtitle2,
+          style: Theme.of(context).textTheme.headline3,
         )
       ],
     );
